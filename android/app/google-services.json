@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "220710204627",
+    "project_id": "newsfeed-105f5",
+    "storage_bucket": "newsfeed-105f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220710204627:android:2e596dba4fc9fe31375026",
+        "android_client_info": {
+          "package_name": "com.example.news_feed_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWXvQjE1ZJIuakbQq9I5vYYYnDtFgHwrs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
