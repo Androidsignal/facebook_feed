@@ -15,10 +15,12 @@ class ReactionCubit extends Cubit<ReactionState> {
   ReactionCubit(this.postRepository) : super(const ReactionState());
 
   FutureOr<void> fetchReaction({required String postId}) {
-    reactionStream = postRepository.getMyReaction(postId).listen((event) {});
-    reactionStream.onData((data) {
-      emit(state.copyWith(reactions: data));
-    });
+    if (FirebaseAuth.instance.currentUser?.uid.isNotEmpty ?? false) {
+      reactionStream = postRepository.getMyReaction(postId).listen((event) {});
+      reactionStream.onData((data) {
+        emit(state.copyWith(reactions: data));
+      });
+    }
   }
 
   FutureOr<void> updateReaction({

@@ -30,6 +30,7 @@ class PostRepository {
   }
 
   Stream<ReactionsModel> getMyReaction(String postId) {
+
     String myId = FirebaseAuth.instance.currentUser!.uid;
     return firestoreRepository.documentStream(
       path: 'posts/$postId/reactions/$myId',
