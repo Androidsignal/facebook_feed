@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:news_feed_flutter/infrastructure/models/comments_model.dart';
 import 'package:news_feed_flutter/infrastructure/models/post_model.dart';
 import 'package:news_feed_flutter/infrastructure/theme/app_theme.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_bloc.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_event.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_state.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_bloc.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_event.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_state.dart';
 
 class CommentPage extends StatelessWidget {
   final PostModel postModel;

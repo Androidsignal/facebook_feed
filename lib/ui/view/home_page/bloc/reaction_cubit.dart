@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_feed_flutter/infrastructure/models/reactions_model.dart';
 import 'package:news_feed_flutter/infrastructure/repository/post_repository.dart';
 
-
 class ReactionCubit extends Cubit<ReactionState> {
   final PostRepository postRepository;
 
@@ -27,13 +26,13 @@ class ReactionCubit extends Cubit<ReactionState> {
     required ReactionsModel reactionsModel,
     required bool removeLike,
   }) async {
-    if(removeLike){
+    if (removeLike) {
       await postRepository.removeMyReaction(postId);
-    }else {
+    } else {
       final result = await postRepository.setMyReaction(postId, reactionsModel);
       debugPrint(result.path);
     }
-     await postRepository.updateReactionCount(postId, !removeLike);
+    await postRepository.updateReactionCount(postId, !removeLike);
   }
 }
 

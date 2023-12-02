@@ -9,8 +9,8 @@ import 'package:news_feed_flutter/infrastructure/models/reactions_model.dart';
 import 'package:news_feed_flutter/infrastructure/repository/firestore_repository.dart';
 import 'package:news_feed_flutter/infrastructure/repository/post_repository.dart';
 import 'package:news_feed_flutter/infrastructure/repository/user_repository.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_event.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_state.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_event.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final PostRepository postRepository;

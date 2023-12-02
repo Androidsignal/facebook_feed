@@ -5,8 +5,8 @@ import 'package:news_feed_flutter/infrastructure/models/post_model.dart';
 import 'package:news_feed_flutter/infrastructure/models/user_model.dart';
 import 'package:news_feed_flutter/infrastructure/repository/user_repository.dart';
 import 'package:news_feed_flutter/infrastructure/theme/app_theme.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/user_cubit.dart';
-import 'package:news_feed_flutter/presentation/home/view/profile_page.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/user_cubit.dart';
+import 'package:news_feed_flutter/ui/view/profile_page/profile_page.dart';
 
 class PostUserWidget extends StatelessWidget {
   final PostModel postModel;
@@ -42,15 +42,15 @@ class PostUserView extends StatelessWidget {
             );
           },
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14),
             leading: CircleAvatar(
               backgroundImage: NetworkImage(
                 state.userModel?.avtar ?? 'https://t3.ftcdn.net/jpg/02/95/26/46/360_F_295264675_clwKZxogAhxLS9sD163Tgkz1WMHsq1RJ.jpg',
               ),
             ),
             subtitle: Text(date, style: context.caption),
-            title: Text(state.userModel?.name ?? ''),
-            trailing: Image.asset('assets/more.png', height: 25),
+            title: Text(state.userModel?.name ?? '',style: context.titleSmall),
+            trailing: Image.asset('assets/more.png', height: 20),
           ),
         );
       },

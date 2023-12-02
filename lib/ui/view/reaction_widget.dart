@@ -1,18 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reaction_button/flutter_reaction_button.dart';
 import 'package:news_feed_flutter/infrastructure/models/post_model.dart';
 import 'package:news_feed_flutter/infrastructure/models/reactions_model.dart';
-import 'package:news_feed_flutter/infrastructure/repository/firestore_repository.dart';
 import 'package:news_feed_flutter/infrastructure/repository/post_repository.dart';
 import 'package:news_feed_flutter/infrastructure/theme/app_theme.dart';
-import 'package:news_feed_flutter/presentation/common/social_feed_reaction_base.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_bloc.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_event.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_state.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/reaction_cubit.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/reaction_cubit.dart';
 
 class ReactionWidget extends StatelessWidget {
   final PostModel postModel;
@@ -33,42 +27,16 @@ class ReactionScreen extends StatelessWidget {
 
   const ReactionScreen({Key? key, required this.postModel}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReactionCubit, ReactionState>(
-      buildWhen: (previous, current) => previous.reactions != current.reactions,
+      // buildWhen: (previous, current) => previous.reactions != current.reactions,
       builder: (context, state) {
         ReactionsModel? reactionsModel = state.reactions;
         String reactionId = reactionsModel?.reactionId ?? '';
         Reaction reaction = reactionId.geReaction;
-        return GestureDetector(
-          onTap: () {
-            context.read<ReactionCubit>().updateReaction(
-                  postId: postModel.id,
-                  reactionsModel: ReactionsModel(
-                    id: postModel.id,
-                    reactTime: DateTime.now(),
-                    userId: FirebaseAuth.instance.currentUser?.uid ?? '',
-                    reactionId: (reactionsModel?.id.isEmpty ?? false) ? 'like' : '',
-                  ),
-                  removeLike: (reactionsModel?.id.isEmpty ?? false) ? false : true,
-                );
-          },
-          child: Row(
-            children: [
-              Image.asset((reactionsModel?.id.isNotEmpty ?? false) ? 'assets/images/ic_like_fill.png' : 'assets/images/ic_like.png', height: 20, width: 20),
-              const SizedBox(width: 10),
-              Text('Like', style: context.caption),
-            ],
-          ),
-        );
         return ReactionButton(
-          boxPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           animateBox: true,
-          itemsSpacing: 10,
-          // selectedReaction: reaction,
-          placeholder: reaction,
           toggle: true,
           onReactionChanged: (value) {
             bool sameReaction = value != null && value.value == reaction.value;

@@ -1,16 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_feed_flutter/app/test_screen.dart';
 import 'package:news_feed_flutter/firebase_options.dart';
 import 'package:news_feed_flutter/infrastructure/repository/firestore_repository.dart';
 import 'package:news_feed_flutter/infrastructure/repository/post_repository.dart';
 import 'package:news_feed_flutter/infrastructure/repository/user_repository.dart';
 import 'package:news_feed_flutter/infrastructure/theme/app_theme.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_bloc.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/home_event.dart';
-import 'package:news_feed_flutter/presentation/home/bloc/user_cubit.dart';
-import 'package:news_feed_flutter/presentation/home/view/home_page.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_bloc.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_event.dart';
+import 'package:news_feed_flutter/ui/view/home_page/home_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,12 +23,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: FirestoreRepository()),
-        RepositoryProvider(
-          create: (context) => PostRepository(context.read<FirestoreRepository>()),
+        RepositoryProvider.value(
+          value: FirestoreRepository(),
         ),
         RepositoryProvider(
-          create: (context) => UserRepository(context.read<FirestoreRepository>()),
+          create: (context) => PostRepository(context.read<FirestoreRepository>(),),
+        ),
+        RepositoryProvider(
+          create: (context) => UserRepository(context.read<FirestoreRepository>(),),
         )
       ],
       child: const AppPage(),
