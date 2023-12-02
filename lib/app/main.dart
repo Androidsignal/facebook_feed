@@ -1,14 +1,19 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:news_feed_flutter/firebase_options.dart';
+import 'package:news_feed_flutter/infrastructure/models/user_model.dart';
 import 'package:news_feed_flutter/infrastructure/repository/firestore_repository.dart';
 import 'package:news_feed_flutter/infrastructure/repository/post_repository.dart';
 import 'package:news_feed_flutter/infrastructure/repository/user_repository.dart';
 import 'package:news_feed_flutter/infrastructure/theme/app_theme.dart';
 import 'package:news_feed_flutter/ui/view/home_page/bloc/home_bloc.dart';
 import 'package:news_feed_flutter/ui/view/home_page/bloc/home_event.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/reaction_cubit.dart';
 
 import '../ui/view/home_page/home_page.dart';
 
@@ -50,6 +55,16 @@ class AppPage extends StatelessWidget {
   Future<User?> anonymousSignIn() async {
     try {
       await FirebaseAuth.instance.signInAnonymously();
+      User? user = FirebaseAuth.instance.currentUser;
+      UserModel userModel = UserModel(
+        userId: user!.uid,
+        name: user.displayName ?? 'Xyz',
+        avtar: user.photoURL ?? "https://t4.ftcdn.net/jpg/01/36/70/67/360_F_136706734_KWhNBhLvY5XTlZVocpxFQK1FfKNOYbMj.jpg",
+      );
+      await FirestoreRepository().setData(
+        path: 'users/${user.uid}',
+        data: userModel.toJson(),
+      );
       return FirebaseAuth.instance.currentUser;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -60,6 +75,7 @@ class AppPage extends StatelessWidget {
           print("Unknown error.");
       }
     }
+    return null;
   }
 
   @override
@@ -67,11 +83,12 @@ class AppPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-            create: (context) => HomeBloc(
-                  postRepository: context.read<PostRepository>(),
-                  firestoreRepository: context.read<FirestoreRepository>(),
-                  userRepository: context.read<UserRepository>(),
-                )..add(const FetchMatchList())),
+          create: (context) => HomeBloc(
+            postRepository: context.read<PostRepository>(),
+            firestoreRepository: context.read<FirestoreRepository>(),
+            userRepository: context.read<UserRepository>(),
+          )..add(const FetchMatchList()),
+        ),
       ],
       child: MaterialApp(
         title: 'News Feed',

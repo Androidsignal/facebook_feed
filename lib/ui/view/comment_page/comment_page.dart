@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:news_feed_flutter/infrastructure/models/comments_model.dart';
 import 'package:news_feed_flutter/infrastructure/models/post_model.dart';
+import 'package:news_feed_flutter/infrastructure/models/user_model.dart';
 import 'package:news_feed_flutter/infrastructure/theme/app_theme.dart';
 import 'package:news_feed_flutter/ui/view/home_page/bloc/home_bloc.dart';
 import 'package:news_feed_flutter/ui/view/home_page/bloc/home_event.dart';
@@ -12,9 +13,10 @@ import 'package:news_feed_flutter/ui/view/home_page/bloc/home_state.dart';
 
 class CommentPage extends StatelessWidget {
   final PostModel postModel;
+  final UserModel userModel;
 
-  CommentPage({Key? key, required this.postModel}) : super(key: key);
- final TextEditingController controller = TextEditingController();
+  CommentPage({Key? key, required this.postModel, required this.userModel}) : super(key: key);
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +39,13 @@ class CommentPage extends StatelessWidget {
                   children: [
                     ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                      leading: const CircleAvatar(
+                      leading: CircleAvatar(
                         backgroundImage: NetworkImage(
-                          'https://1.bp.blogspot.com/--QNc44nYTo8/Xk1X9MFexUI/AAAAAAAAdOg/Bsa6IvOGgi0Dw30yiFqlsta7YJrbVfqdwCEwYBhgL/s1600-rw/Most%2BBeautiful%2B%2BFacebook%2BGirl%2BDP%2B2020%2B%25286%2529.jpg',
+                          userModel.avtar,
                         ),
                       ),
                       subtitle: Text(date, style: context.caption),
-                      title: const Text('Angelina'),
+                      title: Text(userModel.name),
                       trailing: Image.asset('assets/more.png', height: 25),
                     ),
                     Padding(
@@ -77,17 +79,17 @@ class CommentPage extends StatelessWidget {
                                   Column(
                                     children: List.generate(
                                         lastImg.length - 1,
-                                            (inx) => Column(
-                                          children: [
-                                            const SizedBox(height: 5),
-                                            Image.network(
-                                              lastImg[inx + 1],
-                                              height: width / 2,
-                                              width: width / 2.05,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ],
-                                        )),
+                                        (inx) => Column(
+                                              children: [
+                                                const SizedBox(height: 5),
+                                                Image.network(
+                                                  lastImg[inx + 1],
+                                                  height: width / 2,
+                                                  width: width / 2.05,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ],
+                                            )),
                                   ),
                               ],
                             );
@@ -190,7 +192,7 @@ class CommentPage extends StatelessWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(commentModel.userName),
+                                      Text(commentModel.userName.isEmpty ? "User" : commentModel.userName),
                                       Text(commentModel.comment, style: theme.textTheme.bodySmall),
                                     ],
                                   ),
@@ -232,13 +234,15 @@ class CommentPage extends StatelessWidget {
                         border: InputBorder.none,
                         suffix: InkWell(
                           onTap: () {
-                            context.read<HomeBloc>().add(
-                                  SendComments(
-                                    comment: controller.text,
-                                    id: postModel.id,
-                                  ),
-                                );
-                            controller.clear();
+                            if (controller.text.trim().isNotEmpty) {
+                              context.read<HomeBloc>().add(
+                                    SendComments(
+                                      comment: controller.text,
+                                      id: postModel.id,
+                                    ),
+                                  );
+                              controller.clear();
+                            }
                           },
                           child: Image.asset('assets/send.png', height: 20, color: controller.text.isEmpty ? theme.disabledColor : theme.primaryColor),
                         ),

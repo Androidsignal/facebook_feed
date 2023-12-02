@@ -7,25 +7,30 @@ import 'package:news_feed_flutter/ui/view/home_page/bloc/home_state.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'widget/post_widget.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final RefreshController refreshController = RefreshController(initialRefresh: false);
+
+  void onRefresh(HomeBloc bloc) {
+    bloc.add(const FetchMatchList(isRefresh: true));
+    refreshController.refreshCompleted();
+  }
+
+  void pullUpToLoad() {
+    if (context.mounted) {
+      context.read<HomeBloc>().add(const FetchMoreMatchList());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     HomeBloc homeBloc = context.read<HomeBloc>();
-
-    void onRefresh(HomeBloc bloc) {
-      bloc.add(const FetchMatchList(isRefresh: true));
-      refreshController.refreshCompleted();
-    }
-
-    void pullUpToLoad() {
-      if (context.mounted) {
-        homeBloc.add(const FetchMoreMatchList());
-      }
-    }
 
     return Scaffold(
       appBar: AppBar(
