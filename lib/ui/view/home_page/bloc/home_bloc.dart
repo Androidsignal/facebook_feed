@@ -32,6 +32,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<FetchMoreMatchList>(_onFetchMoreMatchList);
     on<ChangeReaction>(_onChangeReaction);
     on<SendComments>(_onSendComments);
+    on<ShareCountUpdate>(_onShareCountUpdate);
   }
 
   void _fetchData({bool isRefresh = false}) {
@@ -111,5 +112,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       data: CommentsModel(id: commentId, postId: event.id, commentTime: DateTime.now(), comment: event.comment, userId: uID ?? '', userName: auth?.displayName ?? '', userProfile: auth?.photoURL ?? '')
           .toJson(),
     );
+  }
+
+  Future _onShareCountUpdate(ShareCountUpdate event, Emitter<HomeState> emit) async {
+    await _postStreamSubscription.cancel();
+    await postRepository.updateSharesCount(event.postId);
+  }
+
+  @override
+  Future<void> close() async {
+    await _postStreamSubscription.cancel();
+    await _userStreamSubscription.cancel();
+    return super.close();
   }
 }

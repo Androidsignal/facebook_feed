@@ -69,3 +69,16 @@ class ChangeReaction extends HomeEvent {
         postId,
       ];
 }
+
+class ShareCountUpdate extends HomeEvent {
+  final String postId;
+
+  const ShareCountUpdate({
+    this.postId = '',
+  });
+
+  @override
+  List<Object> get props => [
+        postId,
+      ];
+}

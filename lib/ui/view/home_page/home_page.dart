@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 2,
       ),
       body: BlocConsumer<HomeBloc, HomeState>(
-        listenWhen: (previous, current) => previous.isFetchMore != current.isFetchMore || previous.posts != current.posts,
+        listenWhen: (previous, current) => previous.isFetchMore != current.isFetchMore,
         listener: (context, state) {
           if (!state.isFetchMore) {
             refreshController.loadComplete();

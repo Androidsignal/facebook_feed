@@ -30,7 +30,6 @@ class PostRepository {
   }
 
   Stream<ReactionsModel> getMyReaction(String postId) {
-
     String myId = FirebaseAuth.instance.currentUser!.uid;
     return firestoreRepository.documentStream(
       path: 'posts/$postId/reactions/$myId',
@@ -64,6 +63,15 @@ class PostRepository {
       path: 'posts/$postId',
       data: {
         'likes': FieldValue.increment(isIncrease ? 1 : -1),
+      },
+    );
+  }
+
+  Future updateSharesCount(String postId) {
+    return firestoreRepository.updateData(
+      path: 'posts/$postId',
+      data: {
+        'shares': FieldValue.increment(1),
       },
     );
   }

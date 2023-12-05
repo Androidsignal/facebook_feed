@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:news_feed_flutter/infrastructure/models/user_model.dart';
+import 'package:news_feed_flutter/infrastructure/repository/post_repository.dart';
 import 'package:news_feed_flutter/infrastructure/repository/user_repository.dart';
 import 'package:news_feed_flutter/infrastructure/theme/app_theme.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_bloc.dart';
+import 'package:news_feed_flutter/ui/view/home_page/bloc/home_event.dart';
 import 'package:news_feed_flutter/ui/view/home_page/bloc/user_cubit.dart';
 import 'package:news_feed_flutter/ui/view/profile_page/profile_page.dart';
 import 'package:share_plus/share_plus.dart';
@@ -183,16 +186,27 @@ class PostPage extends StatelessWidget {
                     Image.asset('assets/like.png', height: 20, width: 20),
                     const SizedBox(width: 10),
                     StreamBuilder(
-                        stream: FirebaseFirestore.instance.collection('posts/${postModel.id}/reactions').snapshots(),
-                        builder: (context, snapshot) {
-                          if(snapshot.hasData) {
-                            return Text('${snapshot.data?.docs.length ?? 0}');
-                          }else {
-                            return const Text('0');
-                          }
-                        }),
+                      stream: FirebaseFirestore.instance.collection('posts/${postModel.id}/reactions').snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text('${snapshot.data?.docs.length ?? 0}');
+                        } else {
+                          return const Text('0');
+                        }
+                      },
+                    ),
                     const Spacer(),
-                    Text('${postModel.shares}'),
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection('posts').doc(postModel.id).snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          PostModel post = PostModel(id: '', createdTime: DateTime.now()).fromJson(snapshot.data?.data() as Map<String, dynamic>);
+                          return Text('${post.shares}');
+                        } else {
+                          return const Text('0');
+                        }
+                      },
+                    ),
                     const SizedBox(width: 5),
                     Text('Shares', style: context.caption),
                   ],
@@ -230,8 +244,8 @@ class PostPage extends StatelessWidget {
                     const Spacer(),
                     GestureDetector(
                       onTap: () async {
+                        context.read<HomeBloc>().add(ShareCountUpdate(postId: postModel.id));
                         await Share.share('www.example.com/${postModel.id} \n\n Hi, I am Angelia,i add new post in $date, Bio: ${postModel.content}', subject: 'Bio: ${postModel.content}');
-                        await FirestoreRepository().updateData(path: 'posts/${postModel.id}', data: {'shares': FieldValue.increment(1)});
                       },
                       child: Row(
                         children: [
